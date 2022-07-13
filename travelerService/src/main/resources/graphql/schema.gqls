@@ -1,0 +1,63 @@
+type Query {
+    profile(id: ID): User!
+    tickets(id: ID): [Ticket]
+    adminProfile: [String]
+    getCode: String!
+    generateQrCode(id: ID): TicketDTO!
+}
+
+type Mutation {
+    insertTicket(ticket: TicketRequestDTO): [TicketDTO!]!
+    modifyProfile(profile: UserDTO): String!
+}
+
+input TicketRequestDTO {
+    cmd: String,
+    quantity: Int
+    zones: String
+    validfrom: String!
+    type: Int!
+}
+
+input UserDTO {
+    name: String
+    address: String
+    date_of_birth: String
+    telephone_number: String
+}
+
+type Zone {
+    id: ID!
+    zoneName: String!
+    tickets: [Ticket!]!
+}
+
+type TicketDTO {
+    sub: ID!
+    iat: String!
+    exp: String!
+    zid: String!
+    validfrom: String!
+    type: Int!
+    jws: String!
+}
+
+type Ticket {
+    id: ID
+    zones: [Zone]
+    issuedAt: String
+    expireAt: String
+    user: User
+    validfrom: String
+    type: Int
+    jws: String
+}
+
+type User {
+    id: ID
+    name: String
+    address: String
+    dateOfBirth: String
+    phoneNumber: String
+    ticket: [Ticket]
+}
