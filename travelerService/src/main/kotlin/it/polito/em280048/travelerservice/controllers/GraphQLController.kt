@@ -8,6 +8,7 @@ import it.polito.em280048.travelerservice.dtos.UserDTO
 import it.polito.em280048.travelerservice.security.JwtUtils
 import it.polito.em280048.travelerservice.services.TicketService
 import it.polito.em280048.travelerservice.services.UserService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.MutationMapping
@@ -20,9 +21,23 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import java.io.ByteArrayOutputStream
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.core.env.Environment
+import org.springframework.core.env.getProperty
 
 @Controller
-class GraphQLController(private val userService: UserService, private val ticketService: TicketService, val jwtUtils: JwtUtils) {
+class GraphQLController(private val userService: UserService, private val ticketService: TicketService, val jwtUtils: JwtUtils, private val discoveryClient: DiscoveryClient, private val env:Environment) {
+
+    @QueryMapping(name = "service/services")
+    fun services(): Any {
+        return discoveryClient.services
+    }
+
+    @QueryMapping(name = "/services/port")
+    fun port(): Any {
+        return "Service Port number: "+ env.getProperty("localhost.server.port")
+    }
+
     @QueryMapping(name = "profile")
     fun profile(@Argument id: String?): Any {
         return userService.getProfile(id)
