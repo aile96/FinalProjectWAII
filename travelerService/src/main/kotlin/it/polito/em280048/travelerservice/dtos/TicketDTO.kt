@@ -13,6 +13,28 @@ data class TicketDTO(
     var type: Int
 )
 
+data class TicketDTOForString(
+    var sub: Long,
+    var iat: String,
+    var exp: String,
+    var zid: String,
+    var jws: String,
+    var validfrom: String,
+    var type: Int
+)
+
+fun TicketDTO.toForString(): TicketDTOForString {
+    return TicketDTOForString(
+        sub,
+        iat.toString(),
+        exp.toString(),
+        zid,
+        jws,
+        validfrom.toString(),
+        type
+    )
+}
+
 fun Ticket.toDTO(zid: Long): TicketDTO {
     return TicketDTO(
         id,

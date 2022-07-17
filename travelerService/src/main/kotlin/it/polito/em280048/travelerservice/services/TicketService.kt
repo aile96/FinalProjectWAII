@@ -2,7 +2,6 @@ package it.polito.em280048.travelerservice.services
 
 import it.polito.em280048.travelerservice.dtos.*
 import it.polito.em280048.travelerservice.entities.*
-import it.polito.em280048.travelerservice.errors.ExceptionLong
 import it.polito.em280048.travelerservice.repositories.*
 import it.polito.em280048.travelerservice.security.JwtUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Component
 @Transactional
@@ -31,7 +29,7 @@ class TicketService @Autowired constructor(
         val identifier = if(!userService.isAdmin()) {
             userService.getCurrentUserDetails().toLong()
         } else {
-            id?.toLong() ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+            id?.toLong() ?: throw Exception("Bad request")
         }
         val ticketDetails = ticketRepository.findAllByUserDetailsId(identifier)
         if(ticketDetails.isEmpty())
@@ -41,7 +39,7 @@ class TicketService @Autowired constructor(
 
     fun getSpecificTicket(id: String): TicketDTO {
         val ticketDetails = ticketRepository.findById(id.toLong())
-        var ticket: Ticket?
+        val ticket: Ticket?
         if((ticketDetails.isEmpty)||(userService.getCurrentUserDetails().toLong()!=ticketDetails.get().userDetails?.id))
             throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         else
@@ -61,7 +59,7 @@ class TicketService @Autowired constructor(
         for (z in ticket.zones.split(" ")) {
             val zone = zoneRepository.findByZoneName(z)
             if (zone == null)
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Zone not available")
+                throw Exception("Bad request")
             else
                 zones.add(zone)
         }
@@ -72,7 +70,7 @@ class TicketService @Autowired constructor(
             try {
                 plusIat = expiration.toLong()
             } catch(e: Exception) {
-                throw ExceptionLong()
+                throw Exception("Bad request")
             }
             var ticketPurchased = Ticket()
             ticketPurchased.userDetails = userDetails
@@ -106,7 +104,7 @@ class TicketService @Autowired constructor(
 
     fun createTicketZone(zones: MutableList<Zone>, ticket: Ticket, key: Pair<Long,String>): List<TicketZone> {
         return zones.map {
-            var ticketZone = TicketZone()
+            val ticketZone = TicketZone()
             ticketZone.zone = it
             ticketZone.hash = key.second
             ticketZone.identifier = key.first
