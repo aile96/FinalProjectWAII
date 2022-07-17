@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package it.polito.em280048.travelerservice.config
 
 
@@ -40,7 +42,7 @@ class WebSecurityConfig(
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity.cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .authorizeRequests().antMatchers("/graph**").permitAll()
+            .authorizeRequests()//.antMatchers("/graph**").permitAll()
             .anyRequest().authenticated().and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         // Add a filter to validate the tokens with every request
