@@ -1,7 +1,6 @@
 package it.polito.em280048.travelerservice.dtos
 
 import it.polito.em280048.travelerservice.entities.User
-import org.springframework.beans.factory.annotation.Value
 import java.time.format.DateTimeFormatter
 
 data class UserDTO(
