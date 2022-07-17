@@ -23,6 +23,7 @@ data class TicketDTOForString(
     var type: Int
 )
 
+//Useful for the creation of the QRcode
 fun TicketDTO.toForString(): TicketDTOForString {
     return TicketDTOForString(
         sub,
