@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package it.polito.em280048.registrationservice.config
 
 
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
+@Suppress("DEPRECATION")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

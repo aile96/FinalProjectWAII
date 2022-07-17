@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package it.polito.em280048.registrationservice.interceptors
 
 import io.github.bucket4j.*

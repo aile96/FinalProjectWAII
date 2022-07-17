@@ -40,10 +40,10 @@ class UserDetailsImpl (
         return true
     }
 
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) return true
-        if (obj == null || javaClass != obj.javaClass) return false
-        val user = obj as UserDetailsImpl
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val user = other as UserDetailsImpl
         return id == user.id
     }
 

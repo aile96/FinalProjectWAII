@@ -39,7 +39,7 @@ class UserService @Autowired constructor(
 
     @PreAuthorize("hasAuthority('ADMIN')")
     fun registerMachine(id: String, password: String) {
-        var user = User(id,encoder.encode(password),id,Role.MACHINE)
+        val user = User(id,encoder.encode(password),id,Role.MACHINE)
         user.state = State.ACTIVE
         userRepository.save(user)
     }
