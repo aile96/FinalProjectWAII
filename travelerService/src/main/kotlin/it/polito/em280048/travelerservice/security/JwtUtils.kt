@@ -1,7 +1,6 @@
 package it.polito.em280048.travelerservice.security
 
 import io.jsonwebtoken.*
-import it.polito.em280048.travelerservice.errors.ExceptionLong
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime

@@ -3,7 +3,7 @@ type Query {
     tickets(id: ID): [Ticket]
     adminProfile: [String]
     getCode: String!
-    generateQrCode(id: ID): TicketDTO!
+    generateQrCode(id: ID): String!
 }
 
 type Mutation {
