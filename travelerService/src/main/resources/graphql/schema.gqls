@@ -12,10 +12,11 @@ type Mutation {
 }
 
 input TicketRequestDTO {
-    cmd: String,
-    quantity: Int
-    zones: String
+    cmd: String!,
+    quantity: Int!
+    zones: String!
     validfrom: String!
+    exp: String!
     type: Int!
 }
 

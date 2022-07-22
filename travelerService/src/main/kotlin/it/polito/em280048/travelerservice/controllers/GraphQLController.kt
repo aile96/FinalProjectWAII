@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import java.io.ByteArrayOutputStream
 import java.util.*
-import javax.servlet.http.HttpServletResponse
+
 
 @Controller
 class GraphQLController(private val userService: UserService, private val ticketService: TicketService, val jwtUtils: JwtUtils, private val discoveryClient: DiscoveryClient, private val env:Environment) {
@@ -64,13 +64,13 @@ class GraphQLController(private val userService: UserService, private val ticket
     }
 
     @MutationMapping
-    fun modifyProfile(@Argument profile: UserDTO, response: HttpServletResponse): Any {
+    fun modifyProfile(@Argument profile: UserDTO): Any {
         userService.updateUserProfile(profile)
         return "OK"
     }
 
-    @MutationMapping
-    fun insertTicket(@Argument ticket: TicketRequestDTO, response: HttpServletResponse): Any {
+    @MutationMapping(name = "insertTicket")
+    fun insertTicket(@Argument(value = "ticket") ticket: TicketRequestDTO): Any {
         return ticketService.generateTickets(ticket)
     }
 }

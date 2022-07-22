@@ -1,16 +1,15 @@
 package it.polito.em280048.travelerservice.services
 
-import it.polito.em280048.travelerservice.dtos.*
+import it.polito.em280048.travelerservice.dtos.UserDTO
+import it.polito.em280048.travelerservice.dtos.toDTO
 import it.polito.em280048.travelerservice.entities.User
-import it.polito.em280048.travelerservice.repositories.*
+import it.polito.em280048.travelerservice.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -22,7 +21,7 @@ class UserService(private val userRepository: UserRepository) {
     lateinit var formatter: String
 
     fun getCurrentUserDetails(): String {
-        return (SecurityContextHolder.getContext().authentication.principal as String?) ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "user must exists")
+        return SecurityContextHolder.getContext().authentication.principal.toString()
     }
 
     fun isAdmin(): Boolean {
@@ -54,12 +53,7 @@ class UserService(private val userRepository: UserRepository) {
 
     fun updateUserProfile(userDTO: UserDTO) {
         val user = getCurrentUserDetails()
-        val userDet = userRepository.findById(user.toLong())
-        val userDetails = if(userDet.isEmpty) {
-            User()
-        } else {
-            userDet.get()
-        }
+        val userDetails = userRepository.findByIdUsr(user.toLong()) ?: User(idUsr = user.toLong())
         try {
             userDetails.dateOfBirth = LocalDate.parse(userDTO.date_of_birth, DateTimeFormatter.ofPattern(formatter))
         } catch (e: Exception) {
@@ -72,9 +66,11 @@ class UserService(private val userRepository: UserRepository) {
     }
 
     fun findById(id: Long): User {
-        val userDetails = userRepository.findById(id)
-        if (userDetails.isEmpty)
-            throw Exception("Bad request")
-        return userDetails.get()
+        val userDetails = userRepository.findByIdUsr(id)
+        if (userDetails==null) {
+            val u = User(idUsr = id)
+            return userRepository.save(u)
+        }
+        return userDetails
     }
 }

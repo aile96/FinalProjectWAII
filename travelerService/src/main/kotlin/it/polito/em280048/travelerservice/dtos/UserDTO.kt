@@ -12,5 +12,5 @@ data class UserDTO(
 )
 
 fun User.toDTO(formatter: String): UserDTO {
-    return UserDTO(id, name, address, dateOfBirth?.format(DateTimeFormatter.ofPattern(formatter)), phoneNumber)
+    return UserDTO(idUsr, name, address, dateOfBirth?.format(DateTimeFormatter.ofPattern(formatter)), phoneNumber)
 }

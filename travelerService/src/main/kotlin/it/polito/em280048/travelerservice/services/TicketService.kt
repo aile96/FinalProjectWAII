@@ -1,16 +1,21 @@
 package it.polito.em280048.travelerservice.services
 
-import it.polito.em280048.travelerservice.dtos.*
-import it.polito.em280048.travelerservice.entities.*
-import it.polito.em280048.travelerservice.repositories.*
+import it.polito.em280048.travelerservice.dtos.TicketDTO
+import it.polito.em280048.travelerservice.dtos.TicketRequestDTO
+import it.polito.em280048.travelerservice.dtos.toDTO
+import it.polito.em280048.travelerservice.entities.Ticket
+import it.polito.em280048.travelerservice.entities.TicketZone
+import it.polito.em280048.travelerservice.entities.Zone
+import it.polito.em280048.travelerservice.repositories.TicketRepository
+import it.polito.em280048.travelerservice.repositories.TicketZoneRepository
+import it.polito.em280048.travelerservice.repositories.ZoneRepository
 import it.polito.em280048.travelerservice.security.JwtUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
 @Component
@@ -22,9 +27,6 @@ class TicketService @Autowired constructor(
     private val jwtUtils: JwtUtils,
     private val ticketZoneRepository: TicketZoneRepository
 ) {
-    @Value("\${travelerService.app.expirationJwt}")
-    private lateinit var expiration: String
-
     fun getTicket(id: String?): List<TicketDTO> {
         val identifier = if(!userService.isAdmin()) {
             userService.getCurrentUserDetails().toLong()
@@ -56,7 +58,7 @@ class TicketService @Autowired constructor(
         val ticketPurchasedDTO = mutableListOf<TicketDTO>()
 
         //extract the zoneNames and create the Zone Objs
-        for (z in ticket.zones.split(" ")) {
+        for (z in ticket.zones.split(";")) {
             val zone = zoneRepository.findByZoneName(z)
             if (zone == null)
                 throw Exception("Bad request")
@@ -66,16 +68,10 @@ class TicketService @Autowired constructor(
 
         val toCreate = createTicketIdentifier(zones)
         for (t in 1..ticket.quantity) {
-            var plusIat: Long
-            try {
-                plusIat = expiration.toLong()
-            } catch(e: Exception) {
-                throw Exception("Bad request")
-            }
             var ticketPurchased = Ticket()
             ticketPurchased.userDetails = userDetails
             ticketPurchased.issuedAt = LocalDateTime.now()
-            ticketPurchased.expireAt = ticketPurchased.issuedAt.plusMinutes(plusIat)
+            ticketPurchased.expireAt = LocalDateTime.parse(ticket.exp)
             ticketPurchased.type = ticket.type
             ticketPurchased.validfrom = LocalDateTime.parse(ticket.validfrom)
             ticketPurchased = ticketRepository.save(ticketPurchased)

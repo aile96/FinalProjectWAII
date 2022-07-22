@@ -19,7 +19,6 @@ extra["springCloudVersion"] = "2021.0.3"
 
 dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-//	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.3")
 	implementation("com.google.code.gson:gson")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")

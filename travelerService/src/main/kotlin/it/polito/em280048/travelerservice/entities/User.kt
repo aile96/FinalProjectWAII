@@ -9,6 +9,8 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long = 0L,
+    @Column(unique = true)
+    var idUsr: Long = 0L,
     var name: String? = null,
     var address: String? = null,
     var dateOfBirth: LocalDate? = null,
